@@ -1,0 +1,64 @@
+{
+  "name": "@huangjs888/react-native-amap",
+  "title": "React Native AMap",
+  "version": "1.0.0",
+  "description": "Implement Gaode map and OpenGL.",
+  "main": "src/index",
+  "source": "src/index",
+  "files": [
+    "README.md",
+    "android",
+    "ios",
+    "react-native-amap.podspec"
+  ],
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huangjs888/react-native-amap.git",
+    "baseUrl": "https://github.com/huangjs888/react-native-amap"
+  },
+  "keywords": [
+    "huangjs",
+    "huangjs888",
+    "map",
+    "amap",
+    "amap3d",
+    "react-native",
+    "react-native-amap",
+    "opengl",
+    "OpenGL",
+    "ios",
+    "android"
+  ],
+  "author": {
+    "name": "Huangjs",
+    "email": "1170384651@qq.com"
+  },
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/huangjs888/react-native-amap/issues"
+  },
+  "homepage": "https://github.com/huangjs888/react-native-amap#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "devDependencies": {
+    "@react-native-community/eslint-config": "2.0.0",
+    "babel-jest": "26.6.3",
+    "eslint": "^7.32.0",
+    "jest": "^26.6.3",
+    "prettier": "^2.0.5",
+    "react": "17.0.2",
+    "react-native": "0.68.2"
+  },
+  "dependencies": {}
+}

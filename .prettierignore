@@ -1,0 +1,11 @@
+.editorconfig
+.eslintignore
+.gitignore
+.npmignore
+.prettierignore
+node_modules/
+/android
+/ios
+/example/node_modules
+/example/android
+/example/ios
