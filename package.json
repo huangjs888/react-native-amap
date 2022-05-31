@@ -1,7 +1,7 @@
 {
   "name": "@huangjs888/react-native-amap",
   "title": "React Native AMap",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Implement Gaode map and OpenGL.",
   "main": "src/index",
   "source": "src/index",
