@@ -62,10 +62,10 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
-    // 高德地图
-    implementation 'com.amap.api:3dmap:latest.integration'
+    // 高德3D地图
+    implementation 'com.amap.api:3dmap:9.2.1'
     // 定位服务
-    implementation 'com.amap.api:location:latest.integration'
+    implementation 'com.amap.api:location:6.1.0'
     // 搜索服务
-    implementation 'com.amap.api:search:latest.integration'
+    implementation 'com.amap.api:search:9.2.0'
 }
