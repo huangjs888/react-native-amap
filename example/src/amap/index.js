@@ -14,14 +14,6 @@ import AMapView, {
   AMapType,
 } from '@huangjs888/react-native-amap';
 
-/* // import { WebView } from 'react-native-webview';
-<WebView
-  onLoad={() => {
-    debugger;
-  }}
-  source={{ uri: 'https://www.baidu.com' }}
-  style={{ display: 'flex', width: '100%', height: '100%' }}
-/>; */
 const opacity = 0.618;
 const colorVal = [0, 20, 40, 60, 80, 100];
 const colorOne = [
