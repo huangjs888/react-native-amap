@@ -6,10 +6,11 @@
   "main": "src/index",
   "source": "src/index",
   "files": [
-    "README.md",
     "android",
     "ios",
-    "react-native-amap.podspec"
+    "src",
+    "react-native-amap.podspec",
+    "README.md"
   ],
   "scripts": {
     "test": "jest",
