@@ -12,21 +12,21 @@ import java.util.List;
 
 public class AMapPackage implements ReactPackage {
 
-    @NonNull
-    @Override
-    public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(
-                new AMapModule(reactContext)
-        );
-    }
+  @NonNull
+  @Override
+  public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
+    return Arrays.<NativeModule>asList(
+      new AMapModule(reactContext)
+    );
+  }
 
-    @NonNull
-    @Override
-    public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
-        return Arrays.<ViewManager>asList(
-                new AMapViewManager(reactContext),
-                new AMapMarkerManager(reactContext),
-                new AMapMeshManager(reactContext)
-        );
-    }
+  @NonNull
+  @Override
+  public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
+    return Arrays.<ViewManager>asList(
+      new AMapViewManager(reactContext),
+      new AMapMarkerManager(reactContext),
+      new AMapMeshManager(reactContext)
+    );
+  }
 }

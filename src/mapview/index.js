@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-05-30 16:55:15
+ * @LastEditTime: 2022-06-06 11:17:16
  * @Description: ******
  */
 // @ts-nocheck
@@ -203,9 +203,13 @@ const AMapView = forwardRef((props, ref) => {
     };
   }, [style, loaded]);
   const eventCallback = useCallback((e) => {
-    const key = e.nativeEvent.trigger;
+    const {trigger:key,error,...restData} = e.nativeEvent;
     if (resolveRef.current[key]) {
-      resolveRef.current[key].resolve(e.nativeEvent);
+      if(error){
+        resolveRef.current[key].reject(new Error(error));
+      }else{
+        resolveRef.current[key].resolve(restData);
+      }
     }
   }, []);
   useImperativeHandle(
@@ -225,12 +229,10 @@ const AMapView = forwardRef((props, ref) => {
       ].forEach((key) => {
         handle[key] = (...args) => {
           invokeMethod(key, [...args]);
-          return key === 'animateCameraPosition'
-            ? undefined
-            : new Promise(
-                (resolve, reject) =>
-                  (resolveRef.current[key] = { resolve, reject }),
-              );
+          return new Promise(
+            (resolve, reject) =>
+              (resolveRef.current[key] = { resolve, reject }),
+          );
         };
       });
       return handle;
@@ -239,7 +241,7 @@ const AMapView = forwardRef((props, ref) => {
   );
   useEffect(() => {
     // 无论如何也要在 1 秒后 setLoaded(true) ，防止 onLoad 事件不触发的情况下显示不正常
-    const timeout = setTimeout(() => setLoaded(true), 2000);
+    const timeout = setTimeout(() => setLoaded(true), 1000);
     return () => clearTimeout(timeout);
   }, []);
   return (
@@ -249,6 +251,7 @@ const AMapView = forwardRef((props, ref) => {
       style={memoStyle}
       onGetCameraPosition={eventCallback}
       onPointToCoordinate={eventCallback}
+      onAnimateCameraPosition={eventCallback}
       onCoordinateToPoint={eventCallback}
       onPickMeshInfo={eventCallback}
       onLoaded={(e) => {
