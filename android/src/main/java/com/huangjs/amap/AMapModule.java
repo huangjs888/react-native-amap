@@ -2,8 +2,8 @@ package com.huangjs.amap;
 
 import androidx.annotation.NonNull;
 
+import com.amap.api.location.AMapLocationClient;
 import com.amap.api.maps.AMapUtils;
-import com.amap.api.maps.CoordinateConverter;
 import com.amap.api.maps.MapsInitializer;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
@@ -109,11 +109,7 @@ public class AMapModule extends ReactContextBaseJavaModule implements WeatherSea
 
   @ReactMethod
   public void coordinateConvert(int coordinateType, ReadableMap coordinate, final Promise promise) {
-    ReactApplicationContext context = getReactApplicationContext();
-    CoordinateConverter converter = new CoordinateConverter(context);
-    converter.from(Types.COORDINATE_TYPES[coordinateType]);
-    converter.coord(Types.mapToLatLng(coordinate));
-    promise.resolve(Types.latLngToMap(converter.convert()));
+    promise.resolve(Types.latLngToMap(Types.coordinateConvert(coordinateType, Types.mapToLatLng(coordinate), getReactApplicationContext())));
   }
 
   @ReactMethod
@@ -130,18 +126,20 @@ public class AMapModule extends ReactContextBaseJavaModule implements WeatherSea
     ReactApplicationContext context = getReactApplicationContext();
     if (apiKey != null && !"".equals(apiKey)) {
       // 地图SDK设置
-      // MapsInitializer.setApiKey(apiKey);
+      MapsInitializer.setApiKey(apiKey);
       // 由于个人信息保护法的实施，从地图8.1.0版本起对旧版本SDK不兼容
       // 请务必确保调用SDK任何接口前先调用更新隐私合规updatePrivacyShow、updatePrivacyAgree两个接口
       // 否则可能产生的异常情况，比如不显示地图，编译不通过、空指针等
       MapsInitializer.updatePrivacyShow(context, true, true);
       MapsInitializer.updatePrivacyAgree(context, true);
       // 搜索SDK设置
+      ServiceSettings.getInstance().setApiKey(apiKey);
       ServiceSettings.updatePrivacyShow(context, true, true);
       ServiceSettings.updatePrivacyAgree(context, true);
       // 定位SDK设置
-      // AMapLocationClient.updatePrivacyShow(context, true, true);
-      // AMapLocationClient.updatePrivacyAgree(context, true);
+      AMapLocationClient.setApiKey(apiKey);
+      AMapLocationClient.updatePrivacyShow(context, true, true);
+      AMapLocationClient.updatePrivacyAgree(context, true);
     }
   }
 

@@ -39,7 +39,7 @@ public class AMapMarkerManager extends ViewGroupManager<AMapMarker> {
   }
 
   @Override
-  public void onDropViewInstance(AMapMarker view) {
+  public void onDropViewInstance(@NonNull AMapMarker view) {
     super.onDropViewInstance(view);
   }
 

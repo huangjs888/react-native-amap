@@ -1,18 +1,18 @@
 package com.huangjs.amap;
 
-import android.opengl.Matrix;
-
 import com.amap.api.maps.model.LatLng;
 
 public class SubMesh extends Mesh {
-  // 基点位置
+  // 位置，最终转化为translate位置偏移
   private LatLng position = null;
+  // 旋转
+  private float[] rotate = new float[]{0.0f, 0.0f, 1.0f, 0.0f};
+  // 缩放比例
+  private float[] scale = new float[]{1.0f, 1.0f, 1.0f};
   // 所有点坐标
   private float[] points = null;
   // 所有面对应点索引集合
   private int[] faces = null;
-  // 变换矩阵
-  private final float[] mvpMatrix = new float[16];
 
   public void setPosition(LatLng position) {
     this.position = position;
@@ -22,24 +22,38 @@ public class SubMesh extends Mesh {
     return this.position;
   }
 
-  public float[] getPoints() {
-    return this.points;
+  public void setRotate(String axis, float angle) {
+    if (rotate.length == 4) {
+      this.rotate = new float[]{rotate[0] != 0 ? 1.0f : 0.0f, rotate[1] != 0 ? 1.0f : 0.0f, (rotate[2] != 0 || (rotate[0] == 0 && rotate[1] == 0)) ? 1.0f : 0.0f, rotate[3]};
+    }
+    rotate = new float[]{"x".equals(axis) ? 1.0f : rotate[0], "y".equals(axis) ? 1.0f : rotate[1], "z".equals(axis) ? 1.0f : rotate[2], angle};
   }
 
-  public int[] getFaces() {
-    return this.faces;
+  public float[] getRotate() {
+    return this.rotate;
   }
 
-  public void draw(float[] pMatrix, float[] vMatrix, float x, float y, float scale) {
-    // 对当前图形重新绘图
-    Matrix.setIdentityM(mvpMatrix, 0);
-    Matrix.multiplyMM(mvpMatrix, 0, pMatrix, 0, vMatrix, 0);
-    this.draw(mvpMatrix, new float[]{x, y, 0.0f}, new float[]{scale, scale, scale}, new float[]{0.0f, 0.0f, 1.0f, 0.0f});
+  public void setScale(float[] scale) {
+    if (scale.length == 3) {
+      this.scale = new float[]{rotate[0] > 0 ? rotate[0] : 1.0f, rotate[1] > 0 ? rotate[1] : 1.0f, rotate[2] > 0 ? rotate[2] : 1.0f};
+    }
+  }
+
+  public float[] getScale() {
+    return this.scale;
   }
 
   public void setData(float[] vertices, float[] vertexColors, int[] faces) {
     this.points = vertices;
     this.faces = faces;
     super.setData(vertices, vertexColors, faces);
+  }
+
+  public float[] getPoints() {
+    return this.points;
+  }
+
+  public int[] getFaces() {
+    return this.faces;
   }
 }

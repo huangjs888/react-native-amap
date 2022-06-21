@@ -5,9 +5,12 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start"
+    "start": "react-native start",
+    "server": "node server/index.js",
+    "debuggerServer": "node --inspect server/index.js"
   },
   "dependencies": {
+    "moment": "^2.29.3",
     "react": "17.0.2",
     "react-native": "0.68.2"
   },

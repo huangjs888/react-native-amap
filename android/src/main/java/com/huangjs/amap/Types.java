@@ -1,5 +1,6 @@
 package com.huangjs.amap;
 
+import android.content.Context;
 import android.graphics.Point;
 import android.location.Location;
 
@@ -13,15 +14,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
 public class Types {
-  public final static int[] MAP_TYPES = new int[]{
-    AMap.MAP_TYPE_NORMAL,
-    AMap.MAP_TYPE_SATELLITE,
-    AMap.MAP_TYPE_NIGHT,
-    AMap.MAP_TYPE_NAVI,
-    AMap.MAP_TYPE_BUS
-  };
-
-  public final static CoordinateConverter.CoordType[] COORDINATE_TYPES = new CoordinateConverter.CoordType[]{
+  private final static CoordinateConverter.CoordType[] COORDINATE_TYPES = new CoordinateConverter.CoordType[]{
     CoordinateConverter.CoordType.ALIYUN,
     CoordinateConverter.CoordType.BAIDU,
     CoordinateConverter.CoordType.GOOGLE,
@@ -29,6 +22,14 @@ public class Types {
     CoordinateConverter.CoordType.MAPABC,
     CoordinateConverter.CoordType.MAPBAR,
     CoordinateConverter.CoordType.SOSOMAP
+  };
+
+  public final static int[] MAP_TYPES = new int[]{
+    AMap.MAP_TYPE_NORMAL,
+    AMap.MAP_TYPE_SATELLITE,
+    AMap.MAP_TYPE_NIGHT,
+    AMap.MAP_TYPE_NAVI,
+    AMap.MAP_TYPE_BUS
   };
 
   public static WritableMap latLngToMap(LatLng latLng) {
@@ -111,5 +112,13 @@ public class Types {
     map.putDouble("heading", location.getBearing());
     map.putDouble("timestamp", location.getTime());
     return map;
+  }
+
+  public static LatLng coordinateConvert(int coordinateType, LatLng latLng, Context context) {
+    if (coordinateType == -1) return latLng;
+    CoordinateConverter converter = new CoordinateConverter(context);
+    converter.from(COORDINATE_TYPES[coordinateType]);
+    converter.coord(latLng);
+    return converter.convert();
   }
 }

@@ -34,7 +34,7 @@ public class AMapMeshManager extends ViewGroupManager<AMapMesh> {
   }
 
   @Override
-  public void onDropViewInstance(AMapMesh view) {
+  public void onDropViewInstance(@NonNull AMapMesh view) {
     super.onDropViewInstance(view);
   }
 
@@ -56,23 +56,28 @@ public class AMapMeshManager extends ViewGroupManager<AMapMesh> {
     }
     export.put("onClick", MapBuilder.of("registrationName", "onClick"));
     export.put("onLongClick", MapBuilder.of("registrationName", "onLongClick"));
+    export.put("onRequested", MapBuilder.of("registrationName", "onRequested"));
     return export;
+  }
+
+  @ReactProp(name = "transparent", defaultBoolean = true)
+  public void transparentEnabled(AMapMesh view, boolean enabled) {
+    view.transparentEnabled(enabled);
   }
 
   @ReactProp(name = "backOrFront")
   public void setBackOrFront(AMapMesh view, int backOrFront) {
-    Mesh mesh = view.getMesh();
-    if (mesh != null) {
-      mesh.setBackOrFront(backOrFront);
-    }
+    view.setBackOrFront(backOrFront);
   }
 
-  @ReactProp(name = "transparentEnabled", defaultBoolean = true)
-  public void transparentEnabled(AMapMesh view, boolean enabled) {
-    Mesh mesh = view.getMesh();
-    if (mesh != null) {
-      mesh.transparentEnabled(enabled);
-    }
+  @ReactProp(name = "depthTest", defaultBoolean = true)
+  public void depthTestEnabled(AMapMesh view, boolean enabled) {
+    view.depthTestEnabled(enabled);
+  }
+
+  @ReactProp(name = "drawMode")
+  public void setDrawMode(AMapMesh view, String drawMode) {
+    view.setDrawMode(drawMode);
   }
 
   @ReactProp(name = "coordinate")
@@ -80,8 +85,38 @@ public class AMapMeshManager extends ViewGroupManager<AMapMesh> {
     view.setPosition(Types.mapToLatLng(coordinate));
   }
 
+  @ReactProp(name = "rotateX")
+  public void setRotateX(AMapMesh view, float angle) {
+    view.setRotate("x", angle);
+  }
+
+  @ReactProp(name = "rotateY")
+  public void setRotateY(AMapMesh view, float angle) {
+    view.setRotate("y", angle);
+  }
+
+  @ReactProp(name = "rotateZ")
+  public void setRotateZ(AMapMesh view, float angle) {
+    view.setRotate("z", angle);
+  }
+
+  @ReactProp(name = "scale")
+  public void setScale(AMapMesh view, float scale) {
+    view.setScale(new float[]{scale, scale, scale});
+  }
+
   @ReactProp(name = "dataSource")
-  public void setData(AMapMesh view, ReadableMap data) {
-    view.setData(data);
+  public void setDataSource(AMapMesh view, ReadableMap dataSource) {
+    view.setDataSource(dataSource);
+  }
+
+  @ReactProp(name = "request")
+  public void setRequest(AMapMesh view, ReadableMap request) {
+    view.setRequest(request);
+  }
+
+  @ReactProp(name = "valueDomain")
+  public void setValueDomain(AMapMesh view, ReadableMap valueDomain) {
+    view.setValueDomain(valueDomain);
   }
 }

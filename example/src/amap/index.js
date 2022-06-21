@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-02-24 16:27:38
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-05-30 16:55:59
+ * @LastEditTime: 2022-06-17 15:45:45
  * @Description: ******
  */
 import React, { useRef, useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ import AMapView, {
   AMapType,
 } from '@huangjs888/react-native-amap';
 
-const opacity = 0.618;
+const opacity = 0.9;
 const colorVal = [0, 20, 40, 60, 80, 100];
 const colorOne = [
   [0, 0.23921568627450981, 0.8745098039215686],
@@ -86,7 +86,7 @@ const buildData = (data) => {
     // hangle：平面上与正北顺时针（向右旋转）夹角[0,360)
     let hangle = i * 30;
     // vangle：空间内与平面逆时针（向上旋转）之间的夹角[0,360)
-    let vangle = 0;
+    let vangle = 60;
     // 水平角度校验确保在[0,360)
     hangle = (hangle < 0 ? 360 : 0) + (hangle % 360);
     // 垂直角度校验确保在[0,360)
@@ -109,7 +109,7 @@ const buildData = (data) => {
     // 此处为负值，因为地图三维坐标y轴正方向是向南而不是向北
     const yRatio = -Math.sin(zenith) * Math.sin(azimuth);
     // 此处为负值，因为地图三维坐标z轴正方向是向下而不是向上
-    const zRatio = -Math.cos(zenith);
+    const zRatio = Math.cos(zenith);
     if (i !== 0) {
       const tIndex = i * vlen + 1;
       faces.push(tIndex);
@@ -181,6 +181,7 @@ export default () => {
         mapRef.current.animateCameraPosition(
           {
             zoom: 10,
+            pitch: 90,
             center: { latitude: 31.502206, longitude: 120.362698 },
           },
           300,
@@ -267,8 +268,7 @@ export default () => {
         compassEnabled>
         <Mesh
           ref={meshRef}
-          transparentEnabled={!mesh}
-          backOrFront={mesh ? AMapType.MeshType.BOTH : AMapType.MeshType.FRONT}
+          depthTest={!mesh}
           coordinate={{
             latitude: 31.502206,
             longitude: 120.362698,
@@ -278,7 +278,13 @@ export default () => {
             [40, mesh ? 0 : 60, 80, mesh ? 0 : 100],
             [80, 60, mesh ? 0 : 40, 20],
             [100, mesh ? 0 : 80, 60, 40],
-            [80, mesh ? 0 : 100, mesh ? 0 : 40, 60],
+            [mesh ? 0 : 20, 40, 60, 80],
+            [60, 40, mesh ? 0 : 100, mesh ? 0 : 80],
+            [40, mesh ? 0 : 60, 80, mesh ? 0 : 100],
+            [60, 40, mesh ? 0 : 100, mesh ? 0 : 80],
+            [100, mesh ? 0 : 80, 60, 40],
+            [60, 40, mesh ? 0 : 100, mesh ? 0 : 80],
+            [80, 60, mesh ? 0 : 40, 20],
             [60, 40, mesh ? 0 : 100, mesh ? 0 : 80],
           ])}
         />

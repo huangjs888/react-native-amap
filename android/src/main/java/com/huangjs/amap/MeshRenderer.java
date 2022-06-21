@@ -1,6 +1,7 @@
 package com.huangjs.amap;
 
 import android.graphics.PointF;
+import android.opengl.Matrix;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
@@ -19,9 +20,16 @@ public class MeshRenderer implements CustomRenderer {
 
   private final AMap aMap;
   private final List<SubMesh> meshList = new ArrayList<>();
+  private final float[] matrix = new float[16]; // 变换矩阵
 
   public MeshRenderer(AMap aMap) {
     this.aMap = aMap;
+  }
+
+  public SubMesh addMesh() {
+    SubMesh mesh = new SubMesh();
+    meshList.add(mesh);
+    return mesh;
   }
 
   public void removeMesh(SubMesh mesh) {
@@ -38,73 +46,6 @@ public class MeshRenderer implements CustomRenderer {
       }
     }
     meshList.clear();
-  }
-
-  // 由给定的三个顶点的坐标，计算三角形面积。
-  private double triangleArea(float[] pa, float[] pb, float[] pc) {
-    if (pa == null || pb == null || pc == null) {
-      return 0;
-    }
-    return Math.abs((pa[0] * pb[1] + pb[0] * pc[1] + pc[0] * pa[1] - pb[0] * pa[1] - pc[0] * pb[1] - pa[0] * pc[1]) / 2.0D);
-  }
-
-  private float[] minus(float[] a, float[] b) {
-    if (a == null || b == null) {
-      return null;
-    }
-    return new float[]{a[0] - b[0], a[1] - b[1], a[2] - b[2]};
-  }
-
-  private float multiply(float[] a, float[] b) {
-    if (a == null || b == null) {
-      return 0;
-    }
-    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-  }
-
-  // 判断点p是否在指定的三角形内或线上：点p与三角形三边
-  private boolean isInTriangle(float[] p, float[] pa, float[] pb, float[] pc, int type) {
-    if (type == 0) {
-      // 面积法：p与三点形成的面积之和等于三角形面积
-      double triangleArea = triangleArea(pa, pb, pc);
-      double sumArea = triangleArea(p, pa, pb) + triangleArea(p, pa, pc) + triangleArea(p, pb, pc);
-      double epsilon = 0.0001;  // 由于浮点数的计算存在误差，故指定一个足够小的数，用于判定两个面积是否(近似)相等。
-      return Math.abs(triangleArea - sumArea) < epsilon;
-    } else if (type == 1) {
-      // 重心法：https://www.cnblogs.com/graphics/archive/2010/08/05/1793393.html
-      float[] v0 = minus(pc, pa);
-      float[] v1 = minus(pb, pa);
-      float[] v2 = minus(p, pa);
-      float dot00 = multiply(v0, v0);
-      float dot01 = multiply(v0, v1);
-      float dot02 = multiply(v0, v2);
-      float dot11 = multiply(v1, v1);
-      float dot12 = multiply(v1, v2);
-      float divisor = dot00 * dot11 - dot01 * dot01;
-      float u = (dot11 * dot02 - dot01 * dot12) / divisor;
-      float v = (dot00 * dot12 - dot01 * dot02) / divisor;
-      return u >= 0 && u <= 1 && v >= 0 && v <= 1 && u + v <= 1;
-    }
-    return false;
-  }
-
-  // 计算两点连线在坐标系中的方位角
-  private double getAngle(double x0, double y0, double x1, double y1) {
-    double distance = getDistance(x0, y0, x1, y1);
-    double angle = Math.asin(Math.abs(y1 - y0) / distance);
-    if (y1 >= y0) {
-      if (x1 >= x0) angle = 2 * Math.PI - angle;// 第一象限+y正半轴+x正半轴
-      else angle = Math.PI + angle;// 第二象限+x负半轴
-    } else {
-      if (x1 <= x0) angle = Math.PI - angle;// 第三象限+y负半轴
-      else angle = angle * 1;// 第四象限
-    }
-    return angle;
-  }
-
-  // 计算两点之间的距离
-  private double getDistance(double x0, double y0, double x1, double y1) {
-    return Math.sqrt((Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2)));
   }
 
   public List<Map<String, Object>> pickMeshInfoByPoint(LatLng point2, List<SubMesh> curMesh) {
@@ -174,25 +115,6 @@ public class MeshRenderer implements CustomRenderer {
     return triangles;
   }
 
-  public SubMesh addMesh() {
-    SubMesh mesh = new SubMesh();
-    meshList.add(mesh);
-    return mesh;
-  }
-
-  public SubMesh addMesh(LatLng position) {
-    SubMesh mesh = this.addMesh();
-    mesh.setPosition(position);
-    return mesh;
-  }
-
-  public SubMesh addMesh(LatLng position, float[] vertices, float[] vertexColors, int[] faces) {
-    SubMesh mesh = this.addMesh();
-    mesh.setPosition(position);
-    mesh.setData(vertices, vertexColors, faces);
-    return mesh;
-  }
-
   @Override
   public void onDrawFrame(GL10 gl10) {
     for (SubMesh mesh : meshList) {
@@ -201,20 +123,27 @@ public class MeshRenderer implements CustomRenderer {
           // 初始化之后，用户主动添加的mesh没有在onSurfaceCreated事件内进行initShader，这里补上
           mesh.initShader();
         }
+        // 设置初始矩阵
+        Matrix.setIdentityM(matrix, 0);
+        // 设置地图的投影矩阵和视图矩阵
+        Matrix.multiplyMM(matrix, 0, aMap.getProjectionMatrix(), 0, aMap.getViewMatrix(), 0);
+        float[] translate = new float[]{0.0f, 0.0f, 0.0f};
+        float[] scale = mesh.getScale();
+        float[] rotate = mesh.getRotate();
         LatLng position = mesh.getPosition();
         if (position != null) {
           PointF glPoint = aMap.getProjection().toOpenGLLocation(position);
-          LatLng position2 = new LatLng(position.latitude + 0.0001, position.longitude + 0.0001);
+          // 传入的顶点都是实际图上距离，要转换位opengl距离
+          translate = new float[]{glPoint.x, glPoint.y, 0.0f};
+          LatLng position2 = new LatLng(position.latitude + 0.0001f, position.longitude + 0.0001f);
           PointF glPoint2 = aMap.getProjection().toOpenGLLocation(position2);
           double mapDistance = AMapUtils.calculateLineDistance(position, position2);
           double glDistance = getDistance(glPoint.x, glPoint.y, glPoint2.x, glPoint2.y);
-          // 传入的顶点都是实际图上距离，要转换位opengl距离
           // 计算距离坐标和gl坐标比例
-          float scale = (float) (glDistance / mapDistance);
-          mesh.draw(aMap.getProjectionMatrix(), aMap.getViewMatrix(), glPoint.x, glPoint.y, scale);
-        } else {
-          mesh.draw(aMap.getProjectionMatrix(), aMap.getViewMatrix(), 0, 0, 1);
+          float s = (float) (glDistance / mapDistance);
+          scale = new float[]{scale[0] * s, scale[1] * s, scale[2] * s};
         }
+        mesh.draw(matrix, translate, scale, rotate);
       }
     }
   }
@@ -241,5 +170,72 @@ public class MeshRenderer implements CustomRenderer {
         mesh.updateViewport(0, 0, width, height);
       }
     }
+  }
+
+  // 由给定的三个顶点的坐标，计算三角形面积。
+  private double triangleArea(float[] pa, float[] pb, float[] pc) {
+    if (pa == null || pb == null || pc == null) {
+      return 0;
+    }
+    return Math.abs((pa[0] * pb[1] + pb[0] * pc[1] + pc[0] * pa[1] - pb[0] * pa[1] - pc[0] * pb[1] - pa[0] * pc[1]) / 2.0D);
+  }
+
+  private float[] minus(float[] a, float[] b) {
+    if (a == null || b == null) {
+      return null;
+    }
+    return new float[]{a[0] - b[0], a[1] - b[1], a[2] - b[2]};
+  }
+
+  private float multiply(float[] a, float[] b) {
+    if (a == null || b == null) {
+      return 0;
+    }
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  }
+
+  // 判断点p是否在指定的三角形内或线上：点p与三角形三边
+  private boolean isInTriangle(float[] p, float[] pa, float[] pb, float[] pc, int type) {
+    if (type == 0) {
+      // 面积法：p与三点形成的面积之和等于三角形面积
+      double triangleArea = triangleArea(pa, pb, pc);
+      double sumArea = triangleArea(p, pa, pb) + triangleArea(p, pa, pc) + triangleArea(p, pb, pc);
+      double epsilon = 0.0001;  // 由于浮点数的计算存在误差，故指定一个足够小的数，用于判定两个面积是否(近似)相等。
+      return Math.abs(triangleArea - sumArea) < epsilon;
+    } else if (type == 1) {
+      // 重心法：https://www.cnblogs.com/graphics/archive/2010/08/05/1793393.html
+      float[] v0 = minus(pc, pa);
+      float[] v1 = minus(pb, pa);
+      float[] v2 = minus(p, pa);
+      float dot00 = multiply(v0, v0);
+      float dot01 = multiply(v0, v1);
+      float dot02 = multiply(v0, v2);
+      float dot11 = multiply(v1, v1);
+      float dot12 = multiply(v1, v2);
+      float divisor = dot00 * dot11 - dot01 * dot01;
+      float u = (dot11 * dot02 - dot01 * dot12) / divisor;
+      float v = (dot00 * dot12 - dot01 * dot02) / divisor;
+      return u >= 0 && u <= 1 && v >= 0 && v <= 1 && u + v <= 1;
+    }
+    return false;
+  }
+
+  // 计算两点连线在坐标系中的方位角
+  private double getAngle(double x0, double y0, double x1, double y1) {
+    double distance = getDistance(x0, y0, x1, y1);
+    double angle = Math.asin(Math.abs(y1 - y0) / distance);
+    if (y1 >= y0) {
+      if (x1 >= x0) angle = 2 * Math.PI - angle;// 第一象限+y正半轴+x正半轴
+      else angle = Math.PI + angle;// 第二象限+x负半轴
+    } else {
+      if (x1 <= x0) angle = Math.PI - angle;// 第三象限+y负半轴
+      else angle = angle * 1;// 第四象限
+    }
+    return angle;
+  }
+
+  // 计算两点之间的距离
+  private double getDistance(double x0, double y0, double x1, double y1) {
+    return Math.sqrt((Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2)));
   }
 }

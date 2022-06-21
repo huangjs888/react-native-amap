@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 public class AMapView extends MapView {
+  private RCTEventEmitter rctEventEmitter = null;
   private final Map<String, AMapMesh> meshMap = new HashMap<>();
   private final Map<String, AMapMarker> markerMap = new HashMap<>();
-  private RCTEventEmitter rctEventEmitter = null;
   private boolean isInitialCameraPositionSet = false;
   private MeshRenderer openglRender = null;
   private boolean openglEvent = false;
@@ -42,17 +42,17 @@ public class AMapView extends MapView {
     MyLocationStyle style = new MyLocationStyle();
     style.myLocationType(MyLocationStyle.LOCATION_TYPE_SHOW);
     getMap().setMyLocationStyle(style);
-    map.setOnMapLoadedListener(() -> dispatchEvent("onLoaded", Arguments.createMap()));
-    map.setOnMyLocationChangeListener((Location location) -> dispatchEvent("onLocationChange", Types.locationToMap(location)));
+    map.setOnMapLoadedListener(() -> dispatchEvent(getId(), "onLoaded", Arguments.createMap()));
+    map.setOnMyLocationChangeListener((Location location) -> dispatchEvent(getId(), "onLocationChange", Types.locationToMap(location)));
     map.setOnMapClickListener((LatLng latLng) -> {
-      dispatchEvent("onClick", positionToMap(map, latLng));
+      dispatchEvent(getId(), "onClick", positionToMap(map, latLng));
       // 注册mesh点击事件
       if (openglEvent) {
         pushMeshInfoEvent("onClick", latLng, null);
       }
     });
     map.setOnMapLongClickListener((LatLng latLng) -> {
-      dispatchEvent("onLongClick", positionToMap(map, latLng));
+      dispatchEvent(getId(), "onLongClick", positionToMap(map, latLng));
       // 注册mesh点击事件
       if (openglEvent) {
         pushMeshInfoEvent("onLongClick", latLng, null);
@@ -65,7 +65,7 @@ public class AMapView extends MapView {
         WritableMap event = Arguments.createMap();
         event.putMap("latLngBounds", Types.latLngBoundsToMap(map.getProjection().getVisibleRegion().latLngBounds));
         event.putMap("cameraPosition", Types.cameraPositionToMap(cameraPosition));
-        dispatchEvent("onCameraMoving", event);
+        dispatchEvent(getId(), "onCameraMoving", event);
       }
 
       @Override
@@ -73,7 +73,7 @@ public class AMapView extends MapView {
         WritableMap event = Arguments.createMap();
         event.putMap("latLngBounds", Types.latLngBoundsToMap(map.getProjection().getVisibleRegion().latLngBounds));
         event.putMap("cameraPosition", Types.cameraPositionToMap(cameraPosition));
-        dispatchEvent("onCameraChange", event);
+        dispatchEvent(getId(), "onCameraChange", event);
 
       }
     });
@@ -124,6 +124,13 @@ public class AMapView extends MapView {
           dispatchEvent(view.getId(), "onDragEnd", positionToMap(map, marker.getPosition()));
       }
     });
+  }
+
+  public void dispatchEvent(int id, String name, WritableMap data) {
+    if (rctEventEmitter == null) {
+      rctEventEmitter = ((ReactContext) getContext()).getJSModule(RCTEventEmitter.class);
+    }
+    rctEventEmitter.receiveEvent(id, name, data);
   }
 
   public void addOverlay(View view) {
@@ -207,14 +214,14 @@ public class AMapView extends MapView {
           WritableMap event = Arguments.createMap();
           event.putString("trigger", "animateCameraPosition");
           event.putString("error", "Animate is canceled");
-          dispatchEvent("onAnimateCameraPosition", event);
+          dispatchEvent(getId(), "onAnimateCameraPosition", event);
         }
 
         @Override
         public void onFinish() {
           WritableMap event = Arguments.createMap();
           event.putString("trigger", "animateCameraPosition");
-          dispatchEvent("onAnimateCameraPosition", event);
+          dispatchEvent(getId(), "onAnimateCameraPosition", event);
         }
       });
     } else {
@@ -231,7 +238,7 @@ public class AMapView extends MapView {
     position.putDouble("x", point.getDouble("x"));
     position.putDouble("y", point.getDouble("y"));
     event.putMap("point", position);
-    dispatchEvent("onPointToCoordinate", event);
+    dispatchEvent(getId(), "onPointToCoordinate", event);
   }
 
   public void coordinateToPoint(ReadableMap coordinate) {
@@ -243,7 +250,7 @@ public class AMapView extends MapView {
     position.putDouble("latitude", coordinate.getDouble("latitude"));
     position.putDouble("longitude", coordinate.getDouble("longitude"));
     event.putMap("latLng", position);
-    dispatchEvent("onCoordinateToPoint", event);
+    dispatchEvent(getId(), "onCoordinateToPoint", event);
   }
 
   public void getCameraPosition() {
@@ -251,7 +258,7 @@ public class AMapView extends MapView {
     event.putString("trigger", "getCameraPosition");
     event.putMap("latLngBounds", Types.latLngBoundsToMap(getMap().getProjection().getVisibleRegion().latLngBounds));
     event.putMap("cameraPosition", Types.cameraPositionToMap(getMap().getCameraPosition()));
-    dispatchEvent("onGetCameraPosition", event);
+    dispatchEvent(getId(), "onGetCameraPosition", event);
   }
 
   public void pickMeshInfoByPoint(ReadableArray viewIds, ReadableMap coordinate) {
@@ -309,20 +316,9 @@ public class AMapView extends MapView {
         WritableMap event = Arguments.createMap();
         event.putString("trigger", "pickMeshInfoByPoint");
         event.putArray("meshInfoList", meshInfoArray);
-        dispatchEvent("onPickMeshInfo", event);
+        dispatchEvent(getId(), "onPickMeshInfo", event);
       }
     }
-  }
-
-  private void dispatchEvent(int id, String name, WritableMap data) {
-    if (rctEventEmitter == null) {
-      rctEventEmitter = ((ReactContext) getContext()).getJSModule(RCTEventEmitter.class);
-    }
-    rctEventEmitter.receiveEvent(id, name, data);
-  }
-
-  private void dispatchEvent(String name, WritableMap data) {
-    dispatchEvent(getId(), name, data);
   }
 
 }

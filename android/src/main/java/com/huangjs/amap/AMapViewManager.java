@@ -99,7 +99,7 @@ public class AMapViewManager extends ViewGroupManager<AMapView> {
         view.getCameraPosition();
         break;
       case ANIMATE_CAMERA_POSITION:
-        view.animateCameraPosition(args.getMap(0), args.getInt(1));
+        if (args != null) view.animateCameraPosition(args.getMap(0), args.getInt(1));
         break;
       case POINT_TO_COORDINATE:
         if (args != null) view.pointToCoordinate(args.getMap(0));

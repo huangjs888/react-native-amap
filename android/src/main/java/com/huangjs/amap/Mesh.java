@@ -10,14 +10,16 @@ import java.nio.IntBuffer;
 import java.util.UUID;
 
 public class Mesh {
-  // 唯一ID
-  private String id = null;
   // 着色器
   private Shader shader = null;
   // 是否前后面都渲染
   private String backOrFront = "both";
+  // 绘制模式
+  private int drawMode = GLES20.GL_TRIANGLES;
   // 是否开启透明度效果
   private boolean transparent = true;
+  // 是否开启深度测试
+  private boolean depthTest = true;
   // 顶点缓存
   private FloatBuffer vertexBuffer = null;
   // 颜色缓存
@@ -28,21 +30,14 @@ public class Mesh {
   private int vertexLength = 0;
   // 序号个数
   private int faceLength = 0;
+  // 唯一ID
+  private final String id;
   // 变换矩阵
   private final float[] mvpMatrix = new float[16];
-    /*// 用户设置矩阵
-    private final float[] initMatrix = new float[16];*/
 
   public Mesh() {
-    this("both", true);
-  }
-
-  public Mesh(String backOrFront, boolean transparent) {
     this.id = UUID.randomUUID().toString();
-    this.backOrFront = backOrFront;
-    this.transparent = transparent;
     Matrix.setIdentityM(mvpMatrix, 0);
-    // Matrix.setIdentityM(initMatrix, 0);
   }
 
   public String getId() {
@@ -99,49 +94,40 @@ public class Mesh {
   public void setBackOrFront(int bof) {
     // 设置两面绘制，还是前面或后面
     this.backOrFront = bof == 1 ? "front" : bof == 2 ? "back" : "both";
-    drawGl();
   }
 
   public void transparentEnabled(boolean enabled) {
     // 是否启用透明度分量
     this.transparent = enabled;
-    drawGl();
   }
 
-    /*public void rotate(float angle, float[] axis) {
-        // 对当前图形矩阵旋转,angle角度，axis代表xyz坐标与原点形成的旋转轴
-        if (axis == null || axis.length < 3) {
-            axis = new float[]{0.0f, 0.0f, 1.0f};
-        }
-        Matrix.rotateM(initMatrix, 0, angle, axis[0], axis[1], axis[2]);
-        drawGl();
-    }
+  public void depthTestEnabled(boolean enabled) {
+    // 是否启用深度测试
+    this.depthTest = enabled;
+  }
 
-    public void scale(float scale) {
-        // 对当前图形矩阵缩放,scale代表缩放比例，默认xyz缩放比例一样，不做分量
-        Matrix.scaleM(initMatrix, 0, scale, scale, scale);
-        drawGl();
-    }
-
-    public void translate(float x, float y, float z) {
-        // 对当前图形分别沿着xyz移动
-        Matrix.translateM(initMatrix, 0, x, y, z);
-        drawGl();
-    }
-
-    public void transform(float[] matrix) {
-        // 对当前图形直接使用矩阵变换
-        if (matrix != null) {
-            Matrix.multiplyMM(initMatrix, 0, initMatrix, 0, matrix, 0);
-        }
-        drawGl();
-    }*/
+  public void setDrawMode(String mode) {
+    if ("points".equals(mode))
+      drawMode = GLES20.GL_POINTS;
+    else if ("lines".equals(mode))
+      drawMode = GLES20.GL_LINES;
+    else if ("line_loop".equals(mode))
+      drawMode = GLES20.GL_LINE_LOOP;
+    else if ("line_strip".equals(mode))
+      drawMode = GLES20.GL_LINE_STRIP;
+    else if ("triangles".equals(mode))
+      drawMode = GLES20.GL_TRIANGLES;
+    else if ("triangles_strip".equals(mode))
+      drawMode = GLES20.GL_TRIANGLE_STRIP;
+    else if ("triangles_loop".equals(mode))
+      drawMode = GLES20.GL_TRIANGLE_FAN;
+  }
 
   public void draw(float[] matrix, float[] translate, float[] scale, float[] rotate) {
     // 对当前图形重新绘图
     Matrix.setIdentityM(mvpMatrix, 0);
     if (matrix != null) {
-      Matrix.multiplyMM(mvpMatrix, 0, /*initMatrix*/ mvpMatrix, 0, matrix, 0);
+      Matrix.multiplyMM(mvpMatrix, 0, mvpMatrix, 0, matrix, 0);
     }
     if (translate != null && translate.length >= 3) {
       Matrix.translateM(mvpMatrix, 0, translate[0], translate[1], translate[2]);
@@ -149,7 +135,7 @@ public class Mesh {
     if (scale != null && scale.length >= 3) {
       Matrix.scaleM(mvpMatrix, 0, scale[0], scale[1], scale[2]);
     }
-    if (rotate != null && rotate.length >= 3) {
+    if (rotate != null && rotate.length >= 4) {
       Matrix.rotateM(mvpMatrix, 0, rotate[3], rotate[0], rotate[1], rotate[2]);
     }
     drawGl();
@@ -159,19 +145,28 @@ public class Mesh {
     if (null == shader) return;
     // 使用program
     GLES20.glUseProgram(shader.program);
-    // 开启深度测试
-    GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-    // 开启或关闭面剔除
-    if (backOrFront.equals("both")) {
-      GLES20.glDisable(GLES20.GL_CULL_FACE);
+    // 开启或关闭深度缓冲区写入数据
+    GLES20.glDepthMask(depthTest);
+    if (depthTest) {
+      // 开启深度测试（不开启，则后面的数据绘制会覆盖前面的）
+      GLES20.glEnable(GLES20.GL_DEPTH_TEST);
     } else {
-      GLES20.glEnable(GLES20.GL_CULL_FACE);
-      if (backOrFront.equals("front")) {
-        GLES20.glCullFace(GLES20.GL_BACK);
-      } else if (backOrFront.equals("back")) {
-        GLES20.glCullFace(GLES20.GL_FRONT);
+      GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+    }
+    // 只有使用三角形画法，GL_CULL_FACE才有效果
+    if (drawMode == GLES20.GL_TRIANGLES || drawMode == GLES20.GL_TRIANGLE_STRIP || drawMode == GLES20.GL_TRIANGLE_FAN) {
+      // 开启或关闭面剔除
+      if (backOrFront.equals("both")) {
+        GLES20.glDisable(GLES20.GL_CULL_FACE);
       } else {
-        GLES20.glCullFace(GLES20.GL_FRONT_AND_BACK);
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
+        if (backOrFront.equals("front")) {
+          GLES20.glCullFace(GLES20.GL_BACK);
+        } else if (backOrFront.equals("back")) {
+          GLES20.glCullFace(GLES20.GL_FRONT);
+        } else {
+          GLES20.glCullFace(GLES20.GL_FRONT_AND_BACK);
+        }
       }
     }
     // 开启可设置透明度效果
@@ -180,6 +175,7 @@ public class Mesh {
       GLES20.glBlendFuncSeparate(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA, GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
       GLES20.glEnable(GLES20.GL_BLEND);
     } else {
+      GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
       GLES20.glDisable(GLES20.GL_BLEND);
     }
     // 顶点指针
@@ -201,9 +197,9 @@ public class Mesh {
     // 禁掉
     GLES20.glDisableVertexAttribArray(shader.aVertex);
     GLES20.glDisableVertexAttribArray(shader.aColor);
-    GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-    GLES20.glDisable(GLES20.GL_CULL_FACE);
-    GLES20.glDisable(GLES20.GL_BLEND);
+    // GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+    // GLES20.glDisable(GLES20.GL_CULL_FACE);
+    // GLES20.glDisable(GLES20.GL_BLEND);
   }
 
   private static class Shader {

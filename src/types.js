@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-05-30 16:39:40
+ * @LastEditTime: 2022-06-17 17:02:02
  * @Description: ******
  */
 // @ts-nocheck
@@ -243,6 +243,12 @@ export const PositionType = PropTypes.shape({
   point: PointType,
 });
 
+export const IconType = PropTypes.shape({
+  uri: PropTypes.string,
+  width: PropTypes.number,
+  height: PropTypes.number,
+});
+
 export const MeshInfoListType = PropTypes.shape({
   meshInfoList: PropTypes.arrayOf(MeshInfoType),
 });
@@ -258,8 +264,23 @@ export const MeshDataType = PropTypes.shape({
   faces: PropTypes.arrayOf(PropTypes.number),
 });
 
-export const IconType = PropTypes.shape({
-  uri: PropTypes.string,
-  width: PropTypes.number,
-  height: PropTypes.number,
+export const MeshDataRequestType = PropTypes.shape({
+  url: PropTypes.string,
+  method: PropTypes.oneOf(['POST', 'GET']),
+  data: PropTypes.object,
+  headers: PropTypes.object,
+  type: PropTypes.oneOf(['form', 'json']),
+  timeout: PropTypes.number,
+  dataParse: PropTypes.shape({
+    dataKey: PropTypes.string,
+    centerMode: PropTypes.oneOf(['single', 'multiple']), // 解析数据时，有多个或单个中心点
+    pointMode: PropTypes.oneOf(['spherical', 'cartesian']), // 球坐标系，笛卡尔坐标系（空间直角坐标系）
+    valueMode: PropTypes.oneOf(['color', 'value']), // color：代表返回的是已经算好的rgba值，value代表返回值，然后计算出rgba，设置value需要定义valueDomain
+    coordType: PropTypes.number, // 获取的数据坐标是哪一种，会转换成高德坐标，如果本身就是高德坐标则不传
+  }),
+});
+export const MeshDataColorType = PropTypes.shape({
+  range: PropTypes.arrayOf(PropTypes.number),
+  color: PropTypes.arrayOf(PropTypes.string),
+  opacity: PropTypes.number,
 });
