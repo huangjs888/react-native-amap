@@ -7,17 +7,17 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "server": "node server/index.js",
-    "debuggerServer": "node --inspect server/index.js"
+    "debugger": "node --inspect server/index.js"
   },
   "dependencies": {
-    "moment": "^2.29.3",
+    "@huangjs888/react-native-amap": "link:../",
+    "moment": "^2.29.4",
     "react": "17.0.2",
     "react-native": "0.68.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.2",
-    "@babel/runtime": "^7.18.3",
-    "babel-plugin-module-resolver": "^4.1.0",
-    "metro-react-native-babel-preset": "^0.71.0"
+    "@babel/core": "^7.18.9",
+    "@babel/runtime": "^7.18.9",
+    "metro-react-native-babel-preset": "^0.71.3"
   }
 }

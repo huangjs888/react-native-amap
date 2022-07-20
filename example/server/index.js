@@ -1,8 +1,9 @@
+// @ts-nocheck
 /*
  * @Author: Huangjs
  * @Date: 2021-05-20 09:41:55
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-06-20 17:23:19
+ * @LastEditTime: 2022-07-20 11:02:15
  * @Description: ******
  */
 
@@ -187,8 +188,12 @@ const queryInfo = (fd, key, index) => {
     let totalValue = 0;
     const timeRange = [new Date().getTime(), 0];
     pointCoord.forEach(({ di, vi }) => {
-      if (data[di].dataTime < timeRange[0]) timeRange[0] = data[di].dataTime;
-      if (data[di].dataTime > timeRange[1]) timeRange[1] = data[di].dataTime;
+      if (data[di].dataTime < timeRange[0]) {
+        timeRange[0] = data[di].dataTime;
+      }
+      if (data[di].dataTime > timeRange[1]) {
+        timeRange[1] = data[di].dataTime;
+      }
       totalValue += +data[di][key][vi];
     });
     // hangle/northAngle：平面上与正北顺时针（向右旋转）夹角[0,360)
@@ -249,7 +254,6 @@ const readFileStream = (filePath) =>
 // 创建服务，并监听端口
 http
   .createServer((request, response) => {
-    debugger;
     const url = new URL(request.url || '', `http://${request.headers.host}`);
     log.success(`${url.href} request start...`);
     new Promise((resolve) => {
@@ -269,10 +273,12 @@ http
           return readFileStream(`${rootDirectory}/data/${type}.json`).then(
             (fileData) => {
               response.writeHead(200, { 'Content-type': 'application/json' });
-              // response.write(dataToString(fileData, type));
-              response.write(dataToString2(fileData, type));
+              const result = !1
+                ? dataToString(fileData, type)
+                : dataToString2(fileData, type);
+              response.write(result);
               response.end();
-              log.success(`Request success...`);
+              log.success('Request success...');
             },
           );
         } else if (url.pathname === '/pickInfo') {
@@ -282,7 +288,7 @@ http
               response.writeHead(200, { 'Content-type': 'application/json' });
               response.write(queryInfo(fileData, type, +index));
               response.end();
-              log.success(`Request success...`);
+              log.success('Request success...');
             },
           );
         } else {

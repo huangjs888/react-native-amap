@@ -2,11 +2,8 @@
  * @Author: Huangjs
  * @Date: 2022-05-27 14:48:30
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-05-27 15:46:00
+ * @LastEditTime: 2022-07-20 13:54:08
  * @Description: ******
- */
-/**
- * @format
  */
 
 import { AppRegistry } from 'react-native';

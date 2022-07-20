@@ -1,5 +1,5 @@
 module.exports = {
-  semi:true,
+  semi: true,
   bracketSameLine: true,
   bracketSpacing: true,
   printWidth: 80,

@@ -2,10 +2,9 @@
  * @Author: Huangjs
  * @Date: 2022-05-24 15:05:05
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-05-30 16:39:44
+ * @LastEditTime: 2022-07-20 11:16:58
  * @Description: ******
  */
-// @ts-nocheck
 
 import { findNodeHandle, UIManager } from 'react-native';
 

@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-05-25 16:27:39
+ * @LastEditTime: 2022-07-20 10:31:31
  * @Description: ******
  */
 import { NativeModules } from 'react-native';
@@ -21,7 +21,10 @@ export function getVersion(): Promise<string> {
 }
 
 // 根据地址和地址所在城市查询该地址的坐标
-export function resolveCoordinateByAddress(address: string, city: string): Promise<any> {
+export function resolveCoordinateByAddress(
+  address: string,
+  city: string,
+): Promise<any> {
   return AMapModule.resolveCoordinateByAddress(address, city);
 }
 
@@ -36,11 +39,17 @@ export function queryWeatherByCity(type: number, city: string): Promise<any> {
 }
 
 // 将其他坐标类型（coordType）转到高德坐标
-export function coordinateConvert(coordType: any, coordinate: LatLng): Promise<LatLng> {
+export function coordinateConvert(
+  coordType: any,
+  coordinate: LatLng,
+): Promise<LatLng> {
   return AMapModule.coordinateConvert(coordType, coordinate);
 }
 
 // 计算给定的一组经纬度距离
-export function calculateLineDistance(coordinate1: LatLng, coordinate2: LatLng): Promise<number> {
+export function calculateLineDistance(
+  coordinate1: LatLng,
+  coordinate2: LatLng,
+): Promise<number> {
   return AMapModule.calculateLineDistance(coordinate1, coordinate2);
 }

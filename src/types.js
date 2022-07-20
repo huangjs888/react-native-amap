@@ -2,10 +2,9 @@
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-06-17 17:02:02
+ * @LastEditTime: 2022-07-20 11:16:49
  * @Description: ******
  */
-// @ts-nocheck
 
 import PropTypes from 'prop-types';
 

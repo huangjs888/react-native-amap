@@ -1,11 +1,10 @@
+.DS_Store
 .editorconfig
 .eslintignore
 .gitignore
 .npmignore
 .prettierignore
 node_modules/
-/android
-/ios
-/example/node_modules
-/example/android
-/example/ios
+android/
+ios/
+react-native-amap.podspec

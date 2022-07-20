@@ -2,10 +2,9 @@
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-05-30 16:39:26
+ * @LastEditTime: 2022-07-20 11:16:15
  * @Description: ******
  */
-// @ts-nocheck
 
 import { NativeModules } from 'react-native';
 

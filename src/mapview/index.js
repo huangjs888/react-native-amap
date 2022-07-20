@@ -1,11 +1,11 @@
+// @ts-nocheck
 /*
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-06-17 15:47:41
+ * @LastEditTime: 2022-07-20 11:16:05
  * @Description: ******
  */
-// @ts-nocheck
 
 import PropTypes from 'prop-types';
 import React, {
@@ -203,11 +203,11 @@ const AMapView = forwardRef((props, ref) => {
     };
   }, [style, loaded]);
   const eventCallback = useCallback((e) => {
-    const {trigger:key,error,...restData} = e.nativeEvent;
+    const { trigger: key, error, ...restData } = e.nativeEvent;
     if (resolveRef.current[key]) {
-      if(error){
+      if (error) {
         resolveRef.current[key].reject(new Error(error));
-      }else{
+      } else {
         resolveRef.current[key].resolve(restData);
       }
     }

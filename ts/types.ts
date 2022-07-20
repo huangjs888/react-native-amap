@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-05-25 16:59:02
+ * @LastEditTime: 2022-07-20 10:32:05
  * @Description: ******
  */
 
@@ -28,7 +28,6 @@ export interface LatLng {
    */
   longitude?: number;
 }
-
 
 /**
  * 矩形坐标边界
@@ -75,8 +74,8 @@ export interface CameraPosition {
  */
 export interface Location extends LatLng {
   /**
- * 时间戳
- */
+   * 时间戳
+   */
   timestamp?: number;
 
   /**

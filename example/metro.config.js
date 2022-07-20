@@ -1,3 +1,10 @@
+/*
+ * @Author: Huangjs
+ * @Date: 2022-07-20 12:34:46
+ * @LastEditors: Huangjs
+ * @LastEditTime: 2022-07-20 16:27:38
+ * @Description: ******
+ */
 const path = require('path');
 const blacklist = require('metro-config/src/defaults/exclusionList');
 const escape = require('escape-string-regexp');
@@ -19,8 +26,8 @@ module.exports = {
     blacklistRE: blacklist(
       modules.map(
         (m) =>
-          new RegExp(`^${escape(path.join(root, 'node_modules', m))}\\/.*$`)
-      )
+          new RegExp(`^${escape(path.join(root, 'node_modules', m))}\\/.*$`),
+      ),
     ),
 
     extraNodeModules: modules.reduce((acc, name) => {

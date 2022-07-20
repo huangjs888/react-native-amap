@@ -287,8 +287,6 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-
-    implementation project(':react-native-amap')
 }
 
 if (isNewArchitectureEnabled()) {

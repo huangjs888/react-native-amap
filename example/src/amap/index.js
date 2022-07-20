@@ -1,8 +1,9 @@
+// @ts-nocheck
 /*
  * @Author: Huangjs
  * @Date: 2022-02-24 16:27:38
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-06-17 15:45:45
+ * @LastEditTime: 2022-07-20 10:58:12
  * @Description: ******
  */
 import React, { useRef, useEffect, useState } from 'react';
@@ -190,7 +191,7 @@ export default () => {
     }
   }, []);
   return (
-    <View style={{ display: 'flex', width: '100%', height: '100%' }}>
+    <View style={styles.view}>
       <Switch value={mesh} onChange={() => setMesh(!mesh)} />
       <AMapView
         ref={mapRef}

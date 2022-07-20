@@ -1,8 +1,9 @@
+// @ts-nocheck
 /*
  * @Author: Huangjs
  * @Date: 2022-06-01 12:40:31
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-06-21 11:31:01
+ * @LastEditTime: 2022-07-20 12:12:50
  * @Description: ******
  */
 
@@ -107,7 +108,7 @@ export default () => {
   const [markerInfo, setMarkerInfo] = useState(defaultMarkerInfo);
   const requestInfo = useMemo(
     () =>
-      index == -1
+      index === -1
         ? null
         : {
             ...defaultRequestInfo,
@@ -116,7 +117,7 @@ export default () => {
     [index],
   );
   const valueDomain = useMemo(
-    () => (loading || index == -1 ? null : dataTypeSet[index].domain),
+    () => (loading || index === -1 ? null : dataTypeSet[index].domain),
     [index, loading],
   );
   const onRequested = useCallback(
@@ -141,7 +142,7 @@ export default () => {
   }, []);
   const pickMeshInfo = useCallback(
     (e) => {
-      if (index != -1 && mapRef.current && meshRef.current) {
+      if (index !== -1 && mapRef.current && meshRef.current) {
         const { latLng } = e.nativeEvent;
         const meshId = meshRef.current.getId();
         mapRef.current
@@ -216,6 +217,7 @@ export default () => {
   }, []);
 
   const isDarkMode = useColorScheme() === 'dark';
+  const display = loading ? 'flex' : 'none';
   return (
     <SafeAreaView
       style={{
@@ -259,17 +261,12 @@ export default () => {
         />
       </AMapView>
       <View
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.45)',
-          display: loading ? 'flex' : 'none',
-          justifyContent: 'center',
-          flex: 1,
-        }}>
+        style={[
+          styles.view,
+          {
+            display,
+          },
+        ]}>
         <ActivityIndicator animating={loading} size="large" color="#1890ff" />
       </View>
     </SafeAreaView>
@@ -277,4 +274,14 @@ export default () => {
 };
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  view: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'center',
+    flex: 1,
+  },
 });
