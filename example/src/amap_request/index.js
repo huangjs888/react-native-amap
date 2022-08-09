@@ -3,7 +3,7 @@
  * @Author: Huangjs
  * @Date: 2022-06-01 12:40:31
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-07-20 12:12:50
+ * @LastEditTime: 2022-07-27 15:15:45
  * @Description: ******
  */
 
@@ -241,7 +241,7 @@ export default () => {
         locationEnabled
         compassEnabled
         onLongClick={pickMeshInfo}
-        onLoaded={mapInitCompleted}>
+        onInitialized={mapInitCompleted}>
         <Mesh
           ref={meshRef}
           request={requestInfo}

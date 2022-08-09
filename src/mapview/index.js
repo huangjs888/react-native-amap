@@ -3,7 +3,7 @@
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-07-20 11:16:05
+ * @LastEditTime: 2022-07-27 15:15:07
  * @Description: ******
  */
 
@@ -150,7 +150,7 @@ const AMapViewPropTypes = {
   /**
    * 地图初始化完成事件
    */
-  onLoaded: PropTypes.func,
+  onInitialized: PropTypes.func,
 
   /**
    * 点击事件
@@ -184,7 +184,7 @@ const NativeAMapView = requireNativeComponent(componentName);
 const AMapView = forwardRef((props, ref) => {
   const myRef = useRef(null);
   const resolveRef = useRef({});
-  const { style, onLoaded, ...restProps } = props;
+  const { style, onInitialized, ...restProps } = props;
   const [loaded, setLoaded] = useState(false);
   const memoStyle = useMemo(() => {
     return {
@@ -254,11 +254,11 @@ const AMapView = forwardRef((props, ref) => {
       onAnimateCameraPosition={eventCallback}
       onCoordinateToPoint={eventCallback}
       onPickMeshInfo={eventCallback}
-      onLoaded={(e) => {
+      onLoad={(e) => {
         // android 地图部分控件不显示的问题在重新 layout 之后会恢复正常。
         // 同时也能修复 ios 地图偶尔出现的 layout 异常
         setLoaded(true);
-        onLoaded && onLoaded.call(this, e);
+        onInitialized && onInitialized.call(this, e);
       }}
     />
   );

@@ -3,7 +3,7 @@
  * @Author: Huangjs
  * @Date: 2022-02-24 16:27:38
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-07-20 10:58:12
+ * @LastEditTime: 2022-07-27 15:15:32
  * @Description: ******
  */
 import React, { useRef, useEffect, useState } from 'react';
@@ -255,7 +255,7 @@ export default () => {
             500,
           );
         }}
-        onLoaded={(e) => {
+        onInitialized={(e) => {
           console.log(333, e.nativeEvent);
         }}
         onLocationChange={(e) => {

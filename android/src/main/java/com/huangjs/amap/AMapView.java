@@ -42,7 +42,7 @@ public class AMapView extends MapView {
     MyLocationStyle style = new MyLocationStyle();
     style.myLocationType(MyLocationStyle.LOCATION_TYPE_SHOW);
     getMap().setMyLocationStyle(style);
-    map.setOnMapLoadedListener(() -> dispatchEvent(getId(), "onLoaded", Arguments.createMap()));
+    map.setOnMapLoadedListener(() -> dispatchEvent(getId(), "onLoad", Arguments.createMap()));
     map.setOnMyLocationChangeListener((Location location) -> dispatchEvent(getId(), "onLocationChange", Types.locationToMap(location)));
     map.setOnMapClickListener((LatLng latLng) -> {
       dispatchEvent(getId(), "onClick", positionToMap(map, latLng));
