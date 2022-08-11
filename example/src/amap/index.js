@@ -3,7 +3,7 @@
  * @Author: Huangjs
  * @Date: 2022-02-24 16:27:38
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-07-27 15:15:32
+ * @LastEditTime: 2022-08-11 15:42:55
  * @Description: ******
  */
 import React, { useRef, useEffect, useState } from 'react';
@@ -177,17 +177,6 @@ export default () => {
         .then((data) => {
           console.log('coordinateToPoint', data);
         });
-      setTimeout(() => {
-        console.log('animateCameraPosition', 'xxxxxxxxxxxxxxxxxxxxxxx');
-        mapRef.current.animateCameraPosition(
-          {
-            zoom: 10,
-            pitch: 90,
-            center: { latitude: 31.502206, longitude: 120.362698 },
-          },
-          300,
-        );
-      }, 3000);
     }
   }, []);
   return (
@@ -273,6 +262,18 @@ export default () => {
           coordinate={{
             latitude: 31.502206,
             longitude: 120.362698,
+          }}
+          onRendered={(e) => {
+            console.log(e.nativeEvent);
+            console.log('animateCameraPosition', 'xxxxxxxxxxxxxxxxxxxxxxx');
+            mapRef.current.animateCameraPosition(
+              {
+                zoom: 10,
+                pitch: 90,
+                center: e.nativeEvent.position,
+              },
+              300,
+            );
           }}
           dataSource={buildData([
             [mesh ? 0 : 20, 40, 60, 80],

@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-07-20 11:16:49
+ * @LastEditTime: 2022-08-09 17:31:24
  * @Description: ******
  */
 
@@ -261,6 +261,20 @@ export const MeshDataType = PropTypes.shape({
   vertices: PropTypes.arrayOf(PropTypes.number),
   vertexColors: PropTypes.arrayOf(PropTypes.number),
   faces: PropTypes.arrayOf(PropTypes.number),
+  zenith: PropTypes.number,
+  azimuth: PropTypes.number,
+  spacing: PropTypes.number,
+  position: LatLngType,
+  coordType: PropTypes.number,
+  point: PropTypes.arrayOf(
+    PropTypes.shape({
+      zenith: PropTypes.number,
+      azimuth: PropTypes.number,
+      spacing: PropTypes.number,
+      center: LatLngType,
+      value: PropTypes.arrayOf(PropTypes.number),
+    }),
+  ),
 });
 
 export const MeshDataRequestType = PropTypes.shape({
@@ -278,6 +292,7 @@ export const MeshDataRequestType = PropTypes.shape({
     coordType: PropTypes.number, // 获取的数据坐标是哪一种，会转换成高德坐标，如果本身就是高德坐标则不传
   }),
 });
+
 export const MeshDataColorType = PropTypes.shape({
   range: PropTypes.arrayOf(PropTypes.number),
   color: PropTypes.arrayOf(PropTypes.string),

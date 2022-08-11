@@ -3,7 +3,7 @@
  * @Author: Huangjs
  * @Date: 2022-05-19 16:27:41
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-07-20 10:59:23
+ * @LastEditTime: 2022-08-11 15:14:29
  * @Description: ******
  */
 
@@ -86,14 +86,14 @@ const MeshPropTypes = {
   request: MeshDataRequestType,
 
   /**
-   * 数据请求后对值进行转换成颜色，该项设置颜色的值域，色域和透明度，仅当设置了request，该项有效
+   * 数据请求后对值进行转换成颜色，该项设置颜色的值域，色域和透明度
    */
   valueDomain: MeshDataColorType,
 
   /**
-   * 请求完成事件，仅当设置了request，该项有效
+   * 渲染结束事件
    */
-  onRequested: PropTypes.func,
+  onRendered: PropTypes.func,
 
   /**
    * 点击事件，仅当父组件AMapView设置了openglEventEnabled为true才会有效

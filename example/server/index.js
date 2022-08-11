@@ -3,7 +3,7 @@
  * @Author: Huangjs
  * @Date: 2021-05-20 09:41:55
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-07-20 11:02:15
+ * @LastEditTime: 2022-08-09 17:34:54
  * @Description: ******
  */
 
@@ -269,13 +269,16 @@ http
     })
       .then((data) => {
         if (url.pathname === '/getData') {
-          const { type } = data;
+          const { type, format } = data;
           return readFileStream(`${rootDirectory}/data/${type}.json`).then(
             (fileData) => {
               response.writeHead(200, { 'Content-type': 'application/json' });
-              const result = !1
-                ? dataToString(fileData, type)
-                : dataToString2(fileData, type);
+              const result =
+                +format === 2
+                  ? dataToString(fileData, type)
+                  : +format === 1
+                  ? fileData
+                  : dataToString2(fileData, type);
               response.write(result);
               response.end();
               log.success('Request success...');

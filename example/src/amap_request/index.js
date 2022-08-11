@@ -3,7 +3,7 @@
  * @Author: Huangjs
  * @Date: 2022-06-01 12:40:31
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-07-27 15:15:45
+ * @LastEditTime: 2022-08-11 17:02:13
  * @Description: ******
  */
 
@@ -120,18 +120,24 @@ export default () => {
     () => (loading || index === -1 ? null : dataTypeSet[index].domain),
     [index, loading],
   );
-  const onRequested = useCallback(
+  const onRendered = useCallback(
     (e) => {
+      console.log(e.nativeEvent);
       setLoading(false);
-      mapRef.current &&
-        mapRef.current.animateCameraPosition(
-          {
-            zoom: 10,
-            pitch: index === 0 ? 0 : 45,
-            center: e.nativeEvent.position,
-          },
-          300,
-        );
+      const { type, position, message } = e.nativeEvent;
+      if (type === 'error') {
+        console.log(message);
+      } else {
+        mapRef.current &&
+          mapRef.current.animateCameraPosition(
+            {
+              zoom: 10,
+              pitch: index === 0 ? 0 : 45,
+              center: position,
+            },
+            300,
+          );
+      }
     },
     [index],
   );
@@ -164,7 +170,6 @@ export default () => {
               )
                 .then((data) => data.json())
                 .then((data) => {
-                  console.log(data);
                   const { value, zenith, startTime, endTime } = data;
                   let description = `中心距离：${
                     Math.round((100 * projectionDistance) / Math.sin(zenith)) /
@@ -246,7 +251,7 @@ export default () => {
           ref={meshRef}
           request={requestInfo}
           valueDomain={valueDomain}
-          onRequested={onRequested}
+          onRendered={onRendered}
         />
         <Marker
           ref={markerRef}
