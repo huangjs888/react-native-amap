@@ -3,7 +3,7 @@
  * @Author: Huangjs
  * @Date: 2022-06-01 12:40:31
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-08-11 16:38:40
+ * @LastEditTime: 2022-08-15 15:01:13
  * @Description: ******
  */
 
@@ -17,6 +17,7 @@ import {
   Switch,
   ActivityIndicator,
 } from 'react-native';
+import moment from 'moment';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import AMapView, {
   Mesh,
@@ -65,6 +66,7 @@ const dataTypeSet = [
     },
   },
 ];
+const address = 'http://10.5.13.133:3000';
 const defaultMarkerInfo = {
   coordinate: {
     latitude: 0,
@@ -81,15 +83,31 @@ export default () => {
   const [infoData, setInfoData] = useState(null);
   const [valueDomain, setValueDomain] = useState(null);
   const [markerInfo, setMarkerInfo] = useState(defaultMarkerInfo);
-  const onRendered = useCallback((e) => {
-    const { type, message } = e.nativeEvent;
-    if (type === 'error') {
-      console.log(message);
-    }
-  }, []);
+  const onRendered = useCallback(
+    (e) => {
+      console.log(e.nativeEvent);
+      setLoading(false);
+      const { type, message } = e.nativeEvent;
+      if (type === 'error') {
+        console.log(message);
+      } else {
+        setLoading(false);
+        mapRef.current &&
+          mapRef.current.animateCameraPosition(
+            {
+              zoom: 10,
+              pitch: infoData.index === 0 ? 0 : 45,
+              center: infoData.position,
+            },
+            300,
+          );
+      }
+    },
+    [infoData],
+  );
   const fetchData = useCallback((index) => {
     setLoading(true);
-    fetch('http://10.5.13.133:3000/getData', {
+    fetch(`${address}/getData`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -101,71 +119,109 @@ export default () => {
       .then(({ data }) => {
         const source = parse(data.list, dataTypeSet[index].key);
         // const source = buildData(true);
-        mapRef.current &&
-          mapRef.current
-            .animateCameraPosition(
-              {
-                zoom: 10,
-                pitch: index === 0 ? 0 : 45,
-                center: source.position,
-              },
-              300,
-            )
-            .then(() => {
-              setLoading(false);
-              setValueDomain(dataTypeSet[index].domain);
-              setInfoData({
-                ...source,
-                coordType: AMapType.CoordinateType.GPS,
-              });
-            });
+        setValueDomain(dataTypeSet[index].domain);
+        setInfoData({
+          index,
+          ...source,
+          coordType: AMapType.CoordinateType.GPS,
+        });
       });
   }, []);
   const mapInitCompleted = useCallback(() => {
     fetchData(whichOne % 3);
     whichOne++;
   }, [fetchData]);
-  const pickMeshInfo = useCallback((e) => {
-    if (mapRef.current && meshRef.current) {
-      const { latLng } = e.nativeEvent;
-      const meshId = meshRef.current.getId();
-      mapRef.current
-        .pickMeshInfoByPoint([meshId], latLng)
-        .then(({ meshInfoList }) => {
-          const pickInfo = meshInfoList.find(
-            (v) => v && v.meshViewId === meshId,
-          );
-          // 拾取到信息
-          if (pickInfo && markerRef.current) {
-            markerRef.current.showInfoWindow();
-            setMarkerInfo({
-              coordinate: latLng,
-              description: '拾取中...',
-            });
-            const { faceIndex, projectionDistance } = pickInfo;
-            let description = `投影距离：${projectionDistance}m\n三角形面：第${
-              faceIndex + 1
-            }个`;
-            console.log(5);
-            AMapModule.resolveAddressByCoordinate(latLng)
-              .then((addr) => {
-                setMarkerInfo({
-                  coordinate: latLng,
-                  description: `${description}\n位置地址：${
-                    addr.address || ''
-                  }`,
-                });
-              })
-              .catch((ee) => {
-                setMarkerInfo({
-                  coordinate: latLng,
-                  description: `${description}\n位置地址：${ee.message}`,
-                });
+  const pickMeshInfo = useCallback(
+    (e) => {
+      if (mapRef.current && meshRef.current) {
+        const { latLng } = e.nativeEvent;
+        const meshId = meshRef.current.getId();
+        mapRef.current
+          .pickMeshInfoByPoint([meshId], latLng)
+          .then(({ meshInfoList }) => {
+            const pickInfo = meshInfoList.find(
+              (v) => v && v.meshViewId === meshId,
+            );
+            // 拾取到信息
+            if (pickInfo && markerRef.current) {
+              markerRef.current.showInfoWindow();
+              setMarkerInfo({
+                coordinate: latLng,
+                description: '拾取中...',
               });
-          }
-        });
-    }
-  }, []);
+              const { index, point } = infoData;
+              const { faceIndex, projectionDistance } = pickInfo;
+              const vlen = point[0].value.length; // 每条数据点的数量
+              const fnum = 2 * (vlen - 1); // 每两条数据中两两4个点构成两个三角形面的数量
+              const dindex = Math.floor(faceIndex / fnum); // 每两条数据中第一条下标
+              const findex = faceIndex % fnum; //  每两条数据中三角形面的序号（第几个三角形）
+              const vindex = Math.floor(findex / 2); // 三角形面所在数据下标
+              const odd = findex % 2 === 0; // 三角形是否是偶数序号
+              const pointCoord = [
+                {
+                  di: odd ? dindex : dindex + 1,
+                  vi: odd ? vindex : vindex + 1,
+                },
+                {
+                  di: odd ? dindex + 1 : dindex,
+                  vi: vindex + 1,
+                },
+                {
+                  di: odd ? dindex + 1 : dindex,
+                  vi: vindex,
+                },
+              ]; // index所在面构成的三点数据坐标
+              let totalValue = 0;
+              const timeRange = [new Date().getTime(), 0];
+              pointCoord.forEach(({ di, vi }) => {
+                if (point[di].time < timeRange[0]) {
+                  timeRange[0] = point[di].time;
+                }
+                if (point[di].time > timeRange[1]) {
+                  timeRange[1] = point[di].time;
+                }
+                totalValue += point[di].value[vi];
+              });
+              const value = totalValue / 3;
+              const startTime = timeRange[0];
+              const endTime = timeRange[1];
+              const { zenith } = point[0];
+              let description = `中心距离：${
+                Math.round((100 * projectionDistance) / Math.sin(zenith)) / 100
+              }m\n垂直高度：${
+                Math.round((100 * projectionDistance) / Math.tan(zenith)) / 100
+              }m\n投影坐标：${
+                Math.round(1000000 * latLng.longitude) / 1000000
+              },${Math.round(1000000 * latLng.latitude) / 1000000}\n采集时间：${
+                startTime === 0 || startTime === endTime
+                  ? moment(endTime).format('YYYY-MM-DD HH:mm:ss')
+                  : `${moment(startTime).format(
+                      'YYYY-MM-DD HH:mm:ss',
+                    )}-${moment(endTime).format('YYYY-MM-DD HH:mm:ss')}`
+              }\n${dataTypeSet[index].label}：${value} ${
+                dataTypeSet[index].unit
+              }`;
+              AMapModule.resolveAddressByCoordinate(latLng)
+                .then((addr) => {
+                  setMarkerInfo({
+                    coordinate: latLng,
+                    description: `${description}\n位置地址：${
+                      addr.address || ''
+                    }`,
+                  });
+                })
+                .catch((ee) => {
+                  setMarkerInfo({
+                    coordinate: latLng,
+                    description: `${description}\n位置地址：${ee.message}`,
+                  });
+                });
+            }
+          });
+      }
+    },
+    [infoData],
+  );
   useEffect(() => {
     AMapModule.init(
       Platform.select({

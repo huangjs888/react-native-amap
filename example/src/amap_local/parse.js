@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-08-09 15:48:52
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-08-10 16:09:21
+ * @LastEditTime: 2022-08-15 14:58:05
  * @Description: ******
  */
 
@@ -46,7 +46,9 @@ export default (data, dataType) => {
       longitude: +data[i].lon || 0,
     };
     const spacing = +data[i].heightInterval;
+    const time = +data[i].dataTime;
     point.push({
+      time,
       center,
       zenith,
       azimuth,
