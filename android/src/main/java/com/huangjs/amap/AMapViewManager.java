@@ -66,8 +66,8 @@ public class AMapViewManager extends ViewGroupManager<AMapView> {
       export = MapBuilder.newHashMap();
     }
     export.put("onLoad", MapBuilder.of("registrationName", "onLoad"));
-    export.put("onClick", MapBuilder.of("registrationName", "onClick"));
-    export.put("onLongClick", MapBuilder.of("registrationName", "onLongClick"));
+    export.put("onPress", MapBuilder.of("registrationName", "onPress"));
+    export.put("onLongPress", MapBuilder.of("registrationName", "onLongPress"));
     export.put("onCameraMoving", MapBuilder.of("registrationName", "onCameraMoving"));
     export.put("onCameraChange", MapBuilder.of("registrationName", "onCameraChange"));
     export.put("onLocationChange", MapBuilder.of("registrationName", "onLocationChange"));

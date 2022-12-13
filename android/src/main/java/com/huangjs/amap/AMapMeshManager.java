@@ -54,8 +54,8 @@ public class AMapMeshManager extends ViewGroupManager<AMapMesh> {
     if (export == null) {
       export = MapBuilder.newHashMap();
     }
-    export.put("onClick", MapBuilder.of("registrationName", "onClick"));
-    export.put("onLongClick", MapBuilder.of("registrationName", "onLongClick"));
+    export.put("onPress", MapBuilder.of("registrationName", "onPress"));
+    export.put("onLongPress", MapBuilder.of("registrationName", "onLongPress"));
     export.put("onRendered", MapBuilder.of("registrationName", "onRendered"));
     return export;
   }

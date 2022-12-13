@@ -59,8 +59,8 @@ public class AMapMarkerManager extends ViewGroupManager<AMapMarker> {
     if (export == null) {
       export = MapBuilder.newHashMap();
     }
-    export.put("onClick", MapBuilder.of("registrationName", "onClick"));
-    export.put("onInfoWindowClick", MapBuilder.of("registrationName", "onInfoWindowClick"));
+    export.put("onPress", MapBuilder.of("registrationName", "onPress"));
+    export.put("onInfoWindowPress", MapBuilder.of("registrationName", "onInfoWindowPress"));
     export.put("onDragStart", MapBuilder.of("registrationName", "onDragStart"));
     export.put("onDrag", MapBuilder.of("registrationName", "onDrag"));
     export.put("onDragEnd", MapBuilder.of("registrationName", "onDragEnd"));

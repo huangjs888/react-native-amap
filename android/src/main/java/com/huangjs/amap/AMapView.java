@@ -45,17 +45,17 @@ public class AMapView extends MapView {
     map.setOnMapLoadedListener(() -> dispatchEvent(getId(), "onLoad", Arguments.createMap()));
     map.setOnMyLocationChangeListener((Location location) -> dispatchEvent(getId(), "onLocationChange", Types.locationToMap(location)));
     map.setOnMapClickListener((LatLng latLng) -> {
-      dispatchEvent(getId(), "onClick", positionToMap(map, latLng));
+      dispatchEvent(getId(), "onPress", positionToMap(map, latLng));
       // 注册mesh点击事件
       if (openglEvent) {
-        pushMeshInfoEvent("onClick", latLng, null);
+        pushMeshInfoEvent("onPress", latLng, null);
       }
     });
     map.setOnMapLongClickListener((LatLng latLng) -> {
-      dispatchEvent(getId(), "onLongClick", positionToMap(map, latLng));
+      dispatchEvent(getId(), "onLongPress", positionToMap(map, latLng));
       // 注册mesh点击事件
       if (openglEvent) {
-        pushMeshInfoEvent("onLongClick", latLng, null);
+        pushMeshInfoEvent("onLongPress", latLng, null);
       }
     });
     map.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
@@ -93,13 +93,13 @@ public class AMapView extends MapView {
     map.setOnInfoWindowClickListener((Marker marker) -> {
       AMapMarker view = markerMap.get(marker.getId());
       if (view != null)
-        dispatchEvent(view.getId(), "onInfoWindowClick", positionToMap(map, marker.getPosition()));
+        dispatchEvent(view.getId(), "onInfoWindowPress", positionToMap(map, marker.getPosition()));
 
     });
     map.setOnMarkerClickListener((Marker marker) -> {
       AMapMarker view = markerMap.get(marker.getId());
       if (view != null)
-        dispatchEvent(view.getId(), "onClick", positionToMap(map, marker.getPosition()));
+        dispatchEvent(view.getId(), "onPress", positionToMap(map, marker.getPosition()));
       return false;
     });
     map.setOnMarkerDragListener(new AMap.OnMarkerDragListener() {
