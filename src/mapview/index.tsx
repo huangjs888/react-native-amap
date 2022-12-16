@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-12-13 13:34:28
+ * @LastEditTime: 2022-12-16 16:26:43
  * @Description: ******
  */
 
@@ -268,7 +268,7 @@ const AMapView = forwardRef(
         height: !loaded ? 1 : s.height !== undefined ? s.height : '100%',
         width: !loaded ? 1 : s.width !== undefined ? s.width : '100%',
       };
-    }, [loaded]);
+    }, [loaded, style]);
     return (
       <NativeAMapView
         {...restProps}

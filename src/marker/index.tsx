@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-12-12 17:46:14
+ * @LastEditTime: 2022-12-15 17:54:42
  * @Description: ******
  */
 
@@ -132,7 +132,7 @@ const Marker = forwardRef(
       ref,
       (): MarkerRef => {
         const invokeMethod = (name: string, args: any[]) =>
-          invoke(myRef.current, 'AMap.Marker', name, args);
+          invoke(myRef.current, 'AMapMarker', name, args);
         const handle: any = {
           getId: () => findNodeHandle(myRef.current),
         };
@@ -151,6 +151,6 @@ const Marker = forwardRef(
 
 type NativeProps = MarkerProps;
 
-const NativeMarker = requireNativeComponent<NativeProps>('AMap.Marker');
+const NativeMarker = requireNativeComponent<NativeProps>('AMapMarker');
 
 export default Marker;

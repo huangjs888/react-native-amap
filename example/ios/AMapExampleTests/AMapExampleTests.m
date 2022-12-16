@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface ExampleAMapTests : XCTestCase
+@interface AMapExampleTests : XCTestCase
 
 @end
 
-@implementation ExampleAMapTests
+@implementation AMapExampleTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

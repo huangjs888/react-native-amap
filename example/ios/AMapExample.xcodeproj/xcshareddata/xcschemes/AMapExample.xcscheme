@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "ExampleAMap.app"
-               BlueprintName = "ExampleAMap"
-               ReferencedContainer = "container:ExampleAMap.xcodeproj">
+               BuildableName = "AMapExample.app"
+               BlueprintName = "AMapExample"
+               ReferencedContainer = "container:AMapExample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "ExampleAMapTests.xctest"
-               BlueprintName = "ExampleAMapTests"
-               ReferencedContainer = "container:ExampleAMap.xcodeproj">
+               BuildableName = "AMapExampleTests.xctest"
+               BlueprintName = "AMapExampleTests"
+               ReferencedContainer = "container:AMapExample.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ExampleAMap.app"
-            BlueprintName = "ExampleAMap"
-            ReferencedContainer = "container:ExampleAMap.xcodeproj">
+            BuildableName = "AMapExample.app"
+            BlueprintName = "AMapExample"
+            ReferencedContainer = "container:AMapExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ExampleAMap.app"
-            BlueprintName = "ExampleAMap"
-            ReferencedContainer = "container:ExampleAMap.xcodeproj">
+            BuildableName = "AMapExample.app"
+            BlueprintName = "AMapExample"
+            ReferencedContainer = "container:AMapExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -16,7 +16,7 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import java.util.Map;
 
 public class AMapMarkerManager extends ViewGroupManager<AMapMarker> {
-  private static final String REACT_CLASS = "AMap.Marker";
+  private static final String REACT_CLASS = "AMapMarker";
   private static final int SHOW_INFO_WINDOW = 0;
   private static final int HIDE_INFO_WINDOW = 1;
   private static final int ANIMATE_TO_COORDINATE = 2;

@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-06-01 12:40:31
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-12-13 09:15:08
+ * @LastEditTime: 2022-12-16 16:27:18
  * @Description: ******
  */
 
@@ -15,7 +15,6 @@ import React, {
 } from 'react';
 import {
   StyleSheet,
-  SafeAreaView,
   Platform,
   View,
   Switch,
@@ -75,7 +74,7 @@ const dataTypeSet = [
     },
   },
 ];
-const address = 'http://10.5.13.133:3000';
+// const address = 'http://10.5.13.133:3000';
 const defaultMarkerInfo = {
   coordinate: {
     latitude: 0,
@@ -163,7 +162,9 @@ export default () => {
                 description: '拾取中...',
               });
               const { index, point } = infoData;
-              if (!point) return;
+              if (!point) {
+                return;
+              }
               const { faceIndex, projectionDistance } = pickInfo;
               const vlen = point[0].value.length; // 每条数据点的数量
               const fnum = 2 * (vlen - 1); // 每两条数据中两两4个点构成两个三角形面的数量
@@ -246,20 +247,28 @@ export default () => {
   }, []);
   const display = loading ? 'flex' : 'none';
   return (
-    <SafeAreaView
-      style={{
-        ...styles.flex,
-      }}>
-      <Switch
-        value={!(whichOne % 2)}
-        onValueChange={() => {
-          fetchData(whichOne % 3);
-          whichOne++;
-        }}
-      />
+    <View style={[styles.container]}>
+      <View
+        style={StyleSheet.flatten([
+          {
+            alignItems: 'center',
+          },
+        ])}>
+        <Switch
+          value={!(whichOne % 2)}
+          onValueChange={() => {
+            fetchData(whichOne % 3);
+            whichOne++;
+          }}
+        />
+      </View>
       <AMapView
         ref={mapRef}
-        style={styles.flex}
+        style={StyleSheet.flatten([
+          {
+            flex: 1,
+          },
+        ])}
         scaleControlsEnabled
         zoomControlsEnabled
         indoorViewEnabled
@@ -294,11 +303,13 @@ export default () => {
         ]}>
         <ActivityIndicator animating={loading} size="large" color="#1890ff" />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
+  container: {
+    flex: 1,
+  },
   view: {
     position: 'absolute',
     top: 0,

@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-06-01 12:40:31
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-12-13 09:14:37
+ * @LastEditTime: 2022-12-16 16:23:17
  * @Description: ******
  */
 
@@ -159,7 +159,9 @@ export default () => {
                 description: '拾取中...',
               });
               const { index, point } = infoData;
-              if (!point) return;
+              if (!point) {
+                return;
+              }
               const { faceIndex, projectionDistance } = pickInfo;
               const vlen = point[0].value.length; // 每条数据点的数量
               const fnum = 2 * (vlen - 1); // 每两条数据中两两4个点构成两个三角形面的数量

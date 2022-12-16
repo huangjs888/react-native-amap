@@ -3,7 +3,7 @@
  * @Author: Huangjs
  * @Date: 2021-05-20 09:41:55
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-08-09 17:34:54
+ * @LastEditTime: 2022-12-16 16:26:53
  * @Description: ******
  */
 
@@ -233,7 +233,7 @@ const resolveStream = (stream) =>
     // 每读一块数据触发data事件，chunk是Buffer实例
     stream.on('data', (chunk) => buffers.push(chunk));
     // 读完数据，触发end事件，这里可以处理结束逻辑
-    stream.on('end', () => resolve(Buffer.concat(buffers)));
+    stream.on('end', () => resolve(global.Buffer.concat(buffers)));
     stream.on('error', (e) => reject(e));
   });
 // 读取文件流

@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-05-19 16:27:41
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-12-12 17:52:29
+ * @LastEditTime: 2022-12-15 17:39:42
  * @Description: ******
  */
 
@@ -136,6 +136,6 @@ const Mesh = forwardRef((props: MeshProps, ref: ForwardedRef<MeshRef>) => {
 
 type NativeProps = MeshProps;
 
-const NativeMesh = requireNativeComponent<NativeProps>('AMap.Mesh');
+const NativeMesh = requireNativeComponent<NativeProps>('AMapMesh');
 
 export default Mesh;

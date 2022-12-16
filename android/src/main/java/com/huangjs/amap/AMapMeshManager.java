@@ -14,7 +14,7 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import java.util.Map;
 
 public class AMapMeshManager extends ViewGroupManager<AMapMesh> {
-  private static final String REACT_CLASS = "AMap.Mesh";
+  private static final String REACT_CLASS = "AMapMesh";
   private final ReactApplicationContext reactAppContext;
 
   public AMapMeshManager(ReactApplicationContext context) {
