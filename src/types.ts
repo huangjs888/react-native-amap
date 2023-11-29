@@ -2,7 +2,7 @@
  * @Author: Huangjs
  * @Date: 2022-05-11 17:49:45
  * @LastEditors: Huangjs
- * @LastEditTime: 2022-12-12 17:20:24
+ * @LastEditTime: 2022-12-29 13:22:11
  * @Description: ******
  */
 
@@ -210,7 +210,7 @@ export enum WeatherType {
 }
 
 /**
- * 地图类型
+ * Mesh渲染类型
  */
 export enum MeshType {
   /**

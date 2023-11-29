@@ -51,7 +51,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "peerDependencies": {
-    "react": "*",
+    "react": ">=16.8.0",
     "react-native": "*"
   },
   "dependencies": {},

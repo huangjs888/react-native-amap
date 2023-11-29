@@ -1,3 +1,10 @@
+/*
+ * @Author: Huangjs
+ * @Date: 2022-05-30 10:41:04
+ * @LastEditors: Huangjs
+ * @LastEditTime: 2023-04-13 15:49:25
+ * @Description: ******
+ */
 package com.huangjs.amap;
 
 import com.amap.api.maps.model.LatLng;
@@ -35,7 +42,7 @@ public class SubMesh extends Mesh {
 
   public void setScale(float[] scale) {
     if (scale.length == 3) {
-      this.scale = new float[]{rotate[0] > 0 ? rotate[0] : 1.0f, rotate[1] > 0 ? rotate[1] : 1.0f, rotate[2] > 0 ? rotate[2] : 1.0f};
+      this.scale = new float[]{scale[0] > 0 ? scale[0] : 1.0f, scale[1] > 0 ? scale[1] : 1.0f, scale[2] > 0 ? scale[2] : 1.0f};
     }
   }
 
